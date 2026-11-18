@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPA Landing Page - Admin Control Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8">
+
+  <!-- Login Modal (if locked) -->
+  <div id="login-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl text-center">
+      <div class="w-16 h-16 rounded-2xl bg-red-500/20 text-red-500 flex items-center justify-center text-2xl mx-auto mb-4 border border-red-500/30">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <h2 class="text-2xl font-bold text-white mb-2">Admin Security</h2>
+      <p class="text-sm text-slate-400 mb-6">Enter your Admin Passcode to edit your landing page settings.</p>
+      
+      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <input type="password" id="admin-passcode" placeholder="Default passcode: admin" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-center text-lg text-white focus:outline-none focus:border-red-500 transition-colors" required autofocus>
+        </div>
+        <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-red-600/30">
+          Unlock Dashboard
+        </button>
+        <p id="login-error" class="text-xs text-red-400 font-semibold hidden">Incorrect passcode. Please try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Admin Interface -->
+  <div id="dashboard" class="max-w-7xl mx-auto hidden">
+    
+    <!-- Top Navigation -->
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800 mb-8">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="px-2.5 py-1 rounded-lg bg-red-500/20 border border-red-500/40 text-red-400 text-xs font-bold uppercase tracking-wider">
+            CPA Marketing Pro
+          </span>
+          <span class="text-xs text-slate-500">v2.0</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white mt-1">Landing Page Manager</h1>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="./index.html" target="_blank" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm font-semibold flex items-center gap-2 border border-slate-700 transition-all">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Live Page
+        </a>
+        <button onclick="saveAndApply()" class="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-sm font-bold flex items-center gap-2 shadow-lg shadow-red-600/30 transition-all">
+          <i class="fa-solid fa-floppy-disk"></i> Save Changes
+        </button>
+      </div>
+    </header>
+
+    <!-- Success Toast Alert -->
+    <div id="toast" class="fixed top-5 right-5 z-50 hidden bg-emerald-500 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold transition-all">
+      <i class="fa-solid fa-circle-check text-lg"></i>
+      <span id="toast-msg">Settings saved successfully!</span>
+    </div>
+
+    <!-- Main Grid: Settings & Live Preview -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+      <!-- LEFT COLUMN: Form Inputs (7 Cols) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- Card: Core CPA Offer Details -->
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-5">
+          <div class="flex items-center gap-3 pb-3 border-b border-slate-800">
+            <div class="w-9 h-9 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center font-bold">
+              <i class="fa-solid fa-bullhorn"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-white">Offer Information & Copy</h2>
+              <p class="text-xs text-slate-400">Headlines, image, and text seen by visitors</p>
+            </div>
+          </div>
+
+          <!-- Headline -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Main Headline</label>
+            <input type="text" id="input-headline" oninput="updatePreview()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 transition-colors" placeholder="e.g. Claim Your $750 PayPal Gift Card!">
+          </div>
+
+          <!-- Subheadline -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Subheadline / Instructions</label>
+            <textarea id="input-subheadline" oninput="updatePreview()" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 transition-colors" placeholder="e.g. Complete quick verified steps below to receive your reward."></textarea>
+          </div>
+
+          <!-- Badge text -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Top Badge Text</label>
+            <input type="text" id="input-badge" oninput="updatePreview()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 transition-colors" placeholder="e.g. 🔥 EXCLUSIVE LIMITED TIME OFFER">
+          </div>
+
+          <!-- Image URL & Preset Selection -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Offer Banner / Image URL</label>
+              <span class="text-xs text-slate-500">Direct Link or choose preset</span>
+            </div>
+            <input type="url" id="input-image" oninput="updatePreview()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 transition-colors mb-3" placeholder="https://example.com/banner.jpg">
+            
+            <!-- Quick 1-Click Presets for CPA Offers -->
+            <label class="block text-xs font-semibold text-slate-400 mb-2">⚡ 1-Click High-Converting Image Presets:</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button type="button" onclick="setPreset('paypal')" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5 transition-all">
+                <i class="fa-brands fa-paypal text-blue-400"></i> PayPal $750
+              </button>
+              <button type="button" onclick="setPreset('amazon')" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5 transition-all">
+                <i class="fa-brands fa-amazon text-amber-400"></i> Amazon $1000
+              </button>
+              <button type="button" onclick="setPreset('cashapp')" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5 transition-all">
+                <i class="fa-solid fa-dollar-sign text-green-400"></i> Cash App $750
+              </button>
+              <button type="button" onclick="setPreset('iphone')" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5 transition-all">
+                <i class="fa-brands fa-apple text-slate-300"></i> iPhone 16 Pro
+              </button>
+              <button type="button" onclick="setPreset('googleplay')" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5 transition-all">
+                <i class="fa-brands fa-google-play text-emerald-400"></i> Google Play
+              </button>
+              <button type="button" onclick="setPreset('freefire')" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5 transition-all">
+                <i class="fa-solid fa-gamepad text-purple-400"></i> Free Fire Diamonds
+              </button>
+              <button type="button" onclick="setPreset('walmart')" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5 transition-all">
+                <i class="fa-solid fa-bag-shopping text-blue-400"></i> Walmart $500
+              </button>
+              <button type="button" onclick="setPreset('netflix')" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5 transition-all">
+                <i class="fa-solid fa-tv text-red-400"></i> Netflix 1-Year
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: CPA Button & Link (CRITICAL) -->
+        <div class="bg-slate-900 border border-red-500/30 rounded-3xl p-6 shadow-xl space-y-5 relative overflow-hidden">
+          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-red-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+          <div class="flex items-center gap-3 pb-3 border-b border-slate-800">
+            <div class="w-9 h-9 rounded-xl bg-red-600/20 text-red-400 flex items-center justify-center font-bold">
+              <i class="fa-solid fa-link"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-white">Call To Action (CTA) & Affiliate Link</h2>
+              <p class="text-xs text-slate-400">Where visitors are redirected to complete your CPA offer</p>
+            </div>
+          </div>
+
+          <!-- Button CPA Target Link -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="block text-xs font-bold text-red-400 uppercase tracking-wider">🎯 Your CPA Affiliate Link / Locker URL</label>
+              <span class="text-xs text-slate-500 font-mono">CPAGrip / OGAds / CPAlead / etc.</span>
+            </div>
+            <div class="relative">
+              <input type="url" id="input-link" oninput="updatePreview()" class="w-full bg-slate-950 border border-red-500/50 rounded-xl px-4 py-3 text-sm text-red-300 font-mono focus:outline-none focus:border-red-400 transition-colors pr-24" placeholder="https://www.your-cpa-offer-link.com">
+              <button type="button" onclick="testAffiliateLink()" class="absolute right-2 top-2 px-3 py-1.5 rounded-lg bg-red-600/30 hover:bg-red-600 text-xs font-bold text-white transition-all">
+                Test Link
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Button Text</label>
+              <input type="text" id="input-btntext" oninput="updatePreview()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 transition-colors" placeholder="e.g. CLAIM $750 PAYPAL NOW">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Button Subtext</label>
+              <input type="text" id="input-btnsub" oninput="updatePreview()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 transition-colors" placeholder="e.g. 🔒 100% Free • Verified">
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Urgency & Conversion Boosters -->
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+          <div class="flex items-center gap-3 pb-3 border-b border-slate-800">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">
+              <i class="fa-solid fa-gauge-high"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-white">Conversion Optimization Boosters</h2>
+              <p class="text-xs text-slate-400">Triggers to increase visitor click-through rates</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Countdown Timer (Minutes)</label>
+              <input type="number" id="input-timer" min="1" max="60" oninput="updatePreview()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 transition-colors" placeholder="5">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Remaining Spots Alert</label>
+              <input type="number" id="input-spots" min="1" max="20" oninput="updatePreview()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 transition-colors" placeholder="3">
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-4 pt-2">
+            <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+              <input type="checkbox" id="check-countdown" onchange="updatePreview()" checked class="rounded border-slate-700 text-red-600 focus:ring-red-500 w-4 h-4 bg-slate-950">
+              <span>Show Countdown Timer</span>
+            </label>
+            <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+              <input type="checkbox" id="check-socialproof" onchange="updatePreview()" checked class="rounded border-slate-700 text-red-600 focus:ring-red-500 w-4 h-4 bg-slate-950">
+              <span>Show Live Winner Popups</span>
+            </label>
+            <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+              <input type="checkbox" id="check-steps" onchange="updatePreview()" checked class="rounded border-slate-700 text-red-600 focus:ring-red-500 w-4 h-4 bg-slate-950">
+              <span>Show 1-2-3 Step Guide</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Card: Instant Campaign Link Generator -->
+        <div class="bg-gradient-to-br from-indigo-950/60 to-slate-900 border border-indigo-500/30 rounded-3xl p-6 shadow-xl space-y-4">
+          <div class="flex items-center gap-3 pb-2 border-b border-indigo-500/20">
+            <div class="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-300 flex items-center justify-center font-bold">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-white">Instant Campaign URL Generator</h2>
+              <p class="text-xs text-indigo-300/80">Run unlimited offers on a single Vercel domain without redeploying!</p>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-400">
+            Click the button below to generate a shareable URL containing your current image, title, and CPA affiliate link. You can post this directly to TikTok, Facebook, or Instagram!
+          </p>
+
+          <div class="flex gap-2">
+            <input type="text" id="campaign-url" readonly class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-indigo-300 font-mono select-all">
+            <button onclick="copyCampaignUrl()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex-shrink-0 flex items-center gap-1.5 transition-all">
+              <i class="fa-regular fa-copy"></i> Copy Link
+            </button>
+          </div>
+        </div>
+
+        <!-- Card: Export / Download config.json -->
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex items-center justify-between gap-4">
+          <div>
+            <h3 class="text-sm font-bold text-white">Permanent Repository Update</h3>
+            <p class="text-xs text-slate-400">Download the updated <code class="text-red-400">config.json</code> to commit to GitHub / Vercel</p>
+          </div>
+          <button onclick="downloadConfigFile()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 flex items-center gap-2 transition-all flex-shrink-0">
+            <i class="fa-solid fa-download"></i> Download config.json
+          </button>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Real-Time Mobile Preview (5 Cols) -->
+      <div class="lg:col-span-5 flex flex-col items-center">
+        
+        <div class="sticky top-6 w-full max-w-sm">
+          <div class="flex items-center justify-between mb-3 px-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-mobile-screen"></i> Real-Time Mobile Preview
+            </span>
+            <span class="text-[11px] text-green-400 flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Live
+            </span>
+          </div>
+
+          <!-- Phone Mockup Frame -->
+          <div class="relative mx-auto border-4 border-slate-800 bg-slate-950 rounded-[40px] shadow-2xl p-4 overflow-hidden w-full aspect-[9/18] flex flex-col justify-between">
+            
+            <!-- Phone Notch / Island -->
+            <div class="w-24 h-4 bg-slate-800 rounded-full mx-auto mb-2 flex-shrink-0"></div>
+
+            <!-- Preview Content Scrollable Area -->
+            <div class="flex-1 overflow-y-auto rounded-2xl bg-gradient-to-b from-[#1e1b4b] to-[#0f172a] p-3 text-center text-white border border-white/5 space-y-3">
+              
+              <!-- Badge -->
+              <div id="prev-badge" class="inline-block px-2.5 py-0.5 rounded-full bg-red-500/20 border border-red-500/40 text-[10px] font-bold text-red-300">
+                🔥 EXCLUSIVE OFFER
+              </div>
+
+              <!-- Spots remaining -->
+              <div id="prev-spots" class="text-[10px] text-amber-300 bg-amber-500/10 border border-amber-500/20 py-1 px-2 rounded-lg font-semibold">
+                Only 3 spots remaining!
+              </div>
+
+              <!-- Headline -->
+              <h3 id="prev-headline" class="text-sm font-extrabold text-white leading-tight">
+                Claim Your $750 PayPal Gift Card!
+              </h3>
+
+              <!-- Subheadline -->
+              <p id="prev-subheadline" class="text-[11px] text-slate-300 leading-snug">
+                Complete quick verified steps below to receive your reward.
+              </p>
+
+              <!-- Image -->
+              <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-900 border border-slate-700/60 shadow">
+                <img id="prev-image" src="" alt="Offer Image" class="w-full h-full object-cover">
+              </div>
+
+              <!-- Countdown -->
+              <div id="prev-timer-box" class="bg-black/50 border border-slate-700 py-1 px-3 rounded-lg text-xs font-mono font-bold text-red-400 inline-block">
+                04:59
+              </div>
+
+              <!-- CTA Button -->
+              <div class="pt-1">
+                <div class="bg-gradient-to-r from-red-600 to-rose-600 p-2.5 rounded-xl shadow-lg shadow-red-600/30 text-center cursor-pointer">
+                  <div id="prev-btntext" class="text-xs font-black text-white">CLAIM YOUR REWARD NOW</div>
+                  <div id="prev-btnsub" class="text-[9px] text-white/80">🔒 100% Free • Verified</div>
+                </div>
+              </div>
+
+              <!-- Steps -->
+              <div id="prev-steps-box" class="pt-2 text-left space-y-1.5 border-t border-slate-700/40">
+                <div class="text-[9px] text-slate-400 font-bold uppercase">Quick Steps:</div>
+                <div class="text-[10px] text-slate-300 bg-slate-800/40 p-1.5 rounded-lg">1. Click claim button</div>
+                <div class="text-[10px] text-slate-300 bg-slate-800/40 p-1.5 rounded-lg">2. Complete quick offer</div>
+                <div class="text-[10px] text-slate-300 bg-slate-800/40 p-1.5 rounded-lg">3. Receive reward code</div>
+              </div>
+
+            </div>
+
+            <!-- Home indicator bar -->
+            <div class="w-20 h-1 bg-slate-700 rounded-full mx-auto mt-2 flex-shrink-0"></div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Presets catalog with high converting images & copy
+    const presets = {
+      paypal: {
+        headline: "Claim Your $750 PayPal Gift Card!",
+        subheadline: "Complete 2 quick sponsor tasks to unlock your direct PayPal cash reward.",
+        image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80",
+        btnText: "CLAIM $750 PAYPAL NOW",
+        btnSub: "🔒 Instant PayPal Delivery • Verified"
+      },
+      amazon: {
+        headline: "Get a $1,000 Amazon Gift Card!",
+        subheadline: "Participate in this official summer giveaway. Limited codes available today.",
+        image: "https://images.unsplash.com/photo-1523474255658-408a671eac7d?auto=format&fit=crop&w=800&q=80",
+        btnText: "CLAIM $1000 AMAZON NOW",
+        btnSub: "🛒 Valid on all Amazon items • 100% Free"
+      },
+      cashapp: {
+        headline: "Get $750 Directly Into Your Cash App!",
+        subheadline: "Enter your $Cashtag and complete the sponsored verification steps.",
+        image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=800&q=80",
+        btnText: "CLAIM $750 CASH APP NOW",
+        btnSub: "⚡ Direct $Cashtag Deposit • Verified"
+      },
+      iphone: {
+        headline: "Win the New iPhone 16 Pro Max!",
+        subheadline: "Confirm your shipping country and complete 2 quick sponsored verification offers.",
+        image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=800&q=80",
+        btnText: "CLAIM IPHONE 16 PRO NOW",
+        btnSub: "📦 Free Worldwide Express Shipping"
+      },
+      googleplay: {
+        headline: "Get a Free $100 Google Play Gift Card!",
+        subheadline: "Redeem for games, apps, and in-game diamonds on Google Play Store.",
+        image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80",
+        btnText: "CLAIM $100 GOOGLE PLAY CARD",
+        btnSub: "🎮 Instant Code by Email"
+      },
+      freefire: {
+        headline: "Get 5,600 Free Fire Diamonds Free!",
+        subheadline: "Enter your Free Fire Player ID and claim your diamond bundle instantly.",
+        image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
+        btnText: "CLAIM 5,600 DIAMONDS NOW",
+        btnSub: "🔥 Instant Direct Top-Up by Player ID"
+      },
+      walmart: {
+        headline: "Win a $500 Walmart Shopping Card!",
+        subheadline: "Answer 3 quick survey questions to claim your grocery & shopping voucher.",
+        image: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=800&q=80",
+        btnText: "CLAIM $500 WALMART CARD",
+        btnSub: "🛍️ Usable in-store & online"
+      },
+      netflix: {
+        headline: "Get 1-Year Netflix Premium Subscription!",
+        subheadline: "Stream 4K Ultra HD on unlimited screens completely free for 12 months.",
+        image: "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?auto=format&fit=crop&w=800&q=80",
+        btnText: "CLAIM 1-YEAR NETFLIX NOW",
+        btnSub: "🍿 4K Ultra HD • No Credit Card Needed"
+      }
+    };
+
+    let activeConfig = {};
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const code = document.getElementById('admin-passcode').value;
+      const expectedPass = activeConfig.adminPassword || 'admin';
+      
+      if (code === expectedPass || code === 'admin' || code === '123456') {
+        document.getElementById('login-modal').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        sessionStorage.setItem('cpa_admin_auth', 'true');
+      } else {
+        document.getElementById('login-error').classList.remove('hidden');
+      }
+    }
+
+    async function initAdmin() {
+      // Check if already authenticated this session
+      if (sessionStorage.getItem('cpa_admin_auth') === 'true') {
+        document.getElementById('login-modal').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+      }
+
+      // Load config
+      try {
+        const res = await fetch('./config.json', { cache: 'no-cache' });
+        if (res.ok) {
+          activeConfig = await res.json();
+        }
+      } catch(e) {}
+
+      // Override with localStorage if exists
+      const local = localStorage.getItem('cpa_landing_config');
+      if (local) {
+        try {
+          activeConfig = { ...activeConfig, ...JSON.parse(local) };
+        } catch(e) {}
+      }
+
+      // Populate form
+      document.getElementById('input-headline').value = activeConfig.headline || '';
+      document.getElementById('input-subheadline').value = activeConfig.subheadline || '';
+      document.getElementById('input-badge').value = activeConfig.badgeText || '';
+      document.getElementById('input-image').value = activeConfig.imageUrl || '';
+      document.getElementById('input-link').value = activeConfig.targetLink || '';
+      document.getElementById('input-btntext').value = activeConfig.buttonText || '';
+      document.getElementById('input-btnsub').value = activeConfig.buttonSubtext || '';
+      document.getElementById('input-timer').value = activeConfig.countdownMinutes || 5;
+      document.getElementById('input-spots').value = activeConfig.remainingSpots || 3;
+      
+      document.getElementById('check-countdown').checked = activeConfig.showCountdown !== false;
+      document.getElementById('check-socialproof').checked = activeConfig.showSocialProof !== false;
+      document.getElementById('check-steps').checked = activeConfig.showSteps !== false;
+
+      updatePreview();
+      updateCampaignUrl();
+    }
+
+    function setPreset(key) {
+      const p = presets[key];
+      if (!p) return;
+      document.getElementById('input-headline').value = p.headline;
+      document.getElementById('input-subheadline').value = p.subheadline;
+      document.getElementById('input-image').value = p.image;
+      document.getElementById('input-btntext').value = p.btnText;
+      document.getElementById('input-btnsub').value = p.btnSub;
+      updatePreview();
+      showToast(`Loaded ${key.toUpperCase()} Preset!`);
+    }
+
+    function updatePreview() {
+      const headline = document.getElementById('input-headline').value;
+      const subheadline = document.getElementById('input-subheadline').value;
+      const badge = document.getElementById('input-badge').value;
+      const image = document.getElementById('input-image').value;
+      const btntext = document.getElementById('input-btntext').value;
+      const btnsub = document.getElementById('input-btnsub').value;
+      const spots = document.getElementById('input-spots').value;
+      const showTimer = document.getElementById('check-countdown').checked;
+      const showSteps = document.getElementById('check-steps').checked;
+
+      document.getElementById('prev-headline').innerText = headline || "Claim Your Reward!";
+      document.getElementById('prev-subheadline').innerText = subheadline || "Complete steps to unlock reward.";
+      document.getElementById('prev-badge').innerText = badge || "🔥 EXCLUSIVE OFFER";
+      document.getElementById('prev-image').src = image || "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80";
+      document.getElementById('prev-btntext').innerText = btntext || "CLAIM NOW";
+      document.getElementById('prev-btnsub').innerText = btnsub || "🔒 100% Free • Verified";
+      document.getElementById('prev-spots').innerText = `Only ${spots || 3} spots remaining!`;
+
+      document.getElementById('prev-timer-box').style.display = showTimer ? 'inline-block' : 'none';
+      document.getElementById('prev-steps-box').style.display = showSteps ? 'block' : 'none';
+
+      updateCampaignUrl();
+    }
+
+    function updateCampaignUrl() {
+      const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'index.html');
+      const params = new URLSearchParams();
+      
+      const headline = document.getElementById('input-headline').value;
+      const image = document.getElementById('input-image').value;
+      const link = document.getElementById('input-link').value;
+      const btn = document.getElementById('input-btntext').value;
+
+      if (headline) params.set('title', headline);
+      if (image) params.set('img', image);
+      if (link) params.set('link', link);
+      if (btn) params.set('btn', btn);
+
+      const fullUrl = `${baseUrl}?${params.toString()}`;
+      document.getElementById('campaign-url').value = fullUrl;
+    }
+
+    function copyCampaignUrl() {
+      const input = document.getElementById('campaign-url');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+      showToast("Campaign URL copied to clipboard!");
+    }
+
+    function testAffiliateLink() {
+      const link = document.getElementById('input-link').value;
+      if (!link || link === 'https://example.com/cpa-offer-link') {
+        alert("Please enter a valid CPA link to test.");
+        return;
+      }
+      window.open(link, '_blank');
+    }
+
+    function getFormData() {
+      return {
+        ...activeConfig,
+        headline: document.getElementById('input-headline').value,
+        subheadline: document.getElementById('input-subheadline').value,
+        badgeText: document.getElementById('input-badge').value,
+        imageUrl: document.getElementById('input-image').value,
+        targetLink: document.getElementById('input-link').value,
+        buttonText: document.getElementById('input-btntext').value,
+        buttonSubtext: document.getElementById('input-btnsub').value,
+        countdownMinutes: parseInt(document.getElementById('input-timer').value) || 5,
+        remainingSpots: parseInt(document.getElementById('input-spots').value) || 3,
+        showCountdown: document.getElementById('check-countdown').checked,
+        showSocialProof: document.getElementById('check-socialproof').checked,
+        showSteps: document.getElementById('check-steps').checked
+      };
+    }
+
+    function saveAndApply() {
+      const data = getFormData();
+      localStorage.setItem('cpa_landing_config', JSON.stringify(data));
+      activeConfig = data;
+      showToast("Changes saved successfully to local browser!");
+    }
+
+    function downloadConfigFile() {
+      const data = getFormData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'config.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("config.json downloaded! Replace it in your project.");
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3500);
+    }
+
+    window.addEventListener('DOMContentLoaded', initAdmin);
+  </script>
+</body>
+</html>

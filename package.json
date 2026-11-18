@@ -1,0 +1,13 @@
+{
+  "name": "cpa-landing-page",
+  "version": "1.0.0",
+  "description": "High-Converting Universal CPA Marketing Landing Page with Admin Dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "deploy": "npx vercel --prod"
+  },
+  "keywords": ["cpa", "landing-page", "affiliate-marketing", "giveaway", "rewards"],
+  "author": "",
+  "license": "MIT"
+}

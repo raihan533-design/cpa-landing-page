@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title id="meta-title">Claim Your Exclusive Reward</title>
+  <meta name="description" content="Limited time promotional offer. Claim your reward now before spots run out!">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          animation: {
+            'pulse-strong': 'pulseStrong 2s infinite',
+            'shimmer': 'shimmer 2.5s infinite',
+            'bounce-soft': 'bounceSoft 2s infinite',
+            'slide-in': 'slideIn 0.5s ease-out forwards',
+            'fade-out': 'fadeOut 0.5s ease-in forwards'
+          },
+          keyframes: {
+            pulseStrong: {
+              '0%, 100%': { transform: 'scale(1)', boxShadow: '0 0 25px rgba(239, 68, 68, 0.6)' },
+              '50%': { transform: 'scale(1.03)', boxShadow: '0 0 35px rgba(239, 68, 68, 0.9)' },
+            },
+            bounceSoft: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-6px)' },
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' },
+            },
+            slideIn: {
+              '0%': { transform: 'translateX(-100%)', opacity: '0' },
+              '100%': { transform: 'translateX(0)', opacity: '1' }
+            },
+            fadeOut: {
+              '0%': { opacity: '1', transform: 'translateX(0)' },
+              '100%': { opacity: '0', transform: 'translateX(-50px)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 50%, #020617 100%);
+      min-height: 100vh;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .cta-btn-gradient {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
+      background-size: 200% 200%;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .cta-btn-gradient:hover {
+      background-position: right center;
+      transform: translateY(-2px) scale(1.02);
+    }
+    .card-glass {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .glow-effect {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(239, 68, 68, 0.15) 50%, transparent 70%);
+      filter: blur(60px);
+      z-index: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="relative flex flex-col items-center justify-between min-h-screen px-4 py-6 md:py-10 selection:bg-red-500 selection:text-white">
+
+  <!-- Glow Background Accent -->
+  <div class="glow-effect"></div>
+
+  <!-- Top Announcement Bar -->
+  <header class="w-full max-w-xl text-center z-10 mb-4">
+    <div id="badge-wrapper" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/20 border border-red-500/40 text-red-300 text-xs md:text-sm font-bold tracking-wide shadow-lg backdrop-blur-md animate-bounce-soft">
+      <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+      <span id="badge-text">🔥 EXCLUSIVE LIMITED TIME OFFER</span>
+    </div>
+  </header>
+
+  <!-- Main Conversion Container -->
+  <main class="w-full max-w-lg z-10 flex flex-col items-center">
+    
+    <div class="card-glass rounded-3xl p-5 md:p-8 w-full shadow-2xl relative overflow-hidden border border-white/10 text-center">
+
+      <!-- Urgency Banner (Remaining Spots) -->
+      <div id="spots-container" class="flex items-center justify-center gap-2 text-xs font-semibold text-amber-300 bg-amber-500/10 border border-amber-500/20 py-1.5 px-3 rounded-xl mb-4">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>Only <strong id="spots-count" class="text-amber-200 underline">3 spots</strong> remaining for your location!</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 id="main-headline" class="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-snug mb-3">
+        Claim Your $750 PayPal Gift Card!
+      </h1>
+
+      <!-- Subheadline / Instructions -->
+      <p id="sub-headline" class="text-sm md:text-base text-slate-300 font-medium leading-relaxed mb-5 max-w-md mx-auto">
+        Complete quick verified steps below to receive your direct reward instantly.
+      </p>
+
+      <!-- Featured Image Container -->
+      <div class="relative w-full aspect-video rounded-2xl overflow-hidden mb-6 bg-slate-900/80 border border-slate-700/60 shadow-inner group">
+        <img id="offer-image" 
+             src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80" 
+             alt="CPA Offer" 
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+             loading="eager"
+             onerror="this.src='https://placehold.co/800x450/1e293b/ffffff?text=Exclusive+Offer'"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+        <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg text-xs font-bold text-white flex items-center gap-1.5 border border-white/10">
+          <i class="fa-solid fa-circle-check text-green-400"></i> Verified Offer
+        </div>
+      </div>
+
+      <!-- Urgency Countdown Timer -->
+      <div id="countdown-wrapper" class="flex flex-col items-center justify-center mb-6">
+        <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">Time Remaining:</span>
+        <div class="inline-flex items-center gap-2 bg-slate-950/60 border border-slate-700/80 px-4 py-2 rounded-xl text-lg font-mono font-bold text-red-400 shadow-inner">
+          <i class="fa-regular fa-clock text-sm"></i>
+          <span id="countdown-display">04:59</span>
+        </div>
+      </div>
+
+      <!-- MAIN ACTION BUTTON (CPA LINK) -->
+      <div class="w-full mb-4">
+        <a id="cta-button" 
+           href="https://example.com/cpa-offer-link" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="cta-btn-gradient animate-pulse-strong text-white font-black text-lg md:text-xl py-4 px-8 rounded-2xl w-full flex flex-col items-center justify-center gap-1 shadow-2xl cursor-pointer select-none active:scale-95">
+          <span class="flex items-center justify-center gap-2 text-center">
+            <span id="button-text">CLAIM YOUR REWARD NOW</span>
+            <i class="fa-solid fa-arrow-right text-base animate-bounce-horizontal"></i>
+          </span>
+          <span id="button-subtext" class="text-xs font-normal text-white/80 tracking-wide">
+            🔒 100% Free • Verified & Secure • Instant Access
+          </span>
+        </a>
+      </div>
+
+      <!-- 3 Quick Steps Guidance -->
+      <div id="steps-container" class="mt-6 pt-5 border-t border-slate-700/60 text-left">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 text-center mb-4">How It Works:</h3>
+        <div class="grid grid-cols-1 gap-3">
+          <div class="flex items-center gap-3 bg-slate-800/40 p-2.5 rounded-xl border border-slate-700/40">
+            <div class="w-7 h-7 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-xs font-bold border border-red-500/30 flex-shrink-0">1</div>
+            <p class="text-xs text-slate-300 font-medium">Click the button above to unlock the official sponsor page.</p>
+          </div>
+          <div class="flex items-center gap-3 bg-slate-800/40 p-2.5 rounded-xl border border-slate-700/40">
+            <div class="w-7 h-7 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold border border-amber-500/30 flex-shrink-0">2</div>
+            <p class="text-xs text-slate-300 font-medium">Enter basic details & complete 1-2 quick free tasks.</p>
+          </div>
+          <div class="flex items-center gap-3 bg-slate-800/40 p-2.5 rounded-xl border border-slate-700/40">
+            <div class="w-7 h-7 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs font-bold border border-green-500/30 flex-shrink-0">3</div>
+            <p class="text-xs text-slate-300 font-medium">Your reward code / cash will be delivered to your email.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security / Trust Badges -->
+      <div class="mt-6 pt-4 border-t border-slate-700/40 flex items-center justify-center gap-4 text-slate-400 text-xs font-semibold">
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-lock text-green-400"></i> SSL 256-Bit</span>
+        <span class="text-slate-600">•</span>
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-blue-400"></i> Virus Free</span>
+        <span class="text-slate-600">•</span>
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-yellow-400"></i> Instant</span>
+      </div>
+
+    </div>
+
+    <!-- Admin Link Access (Subtle button for owner) -->
+    <div class="mt-4 text-center">
+      <a href="./admin.html" class="text-xs text-slate-500 hover:text-slate-300 transition-colors inline-flex items-center gap-1">
+        <i class="fa-solid fa-gear text-[10px]"></i> Admin Settings
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Live Social Proof Popup Notification -->
+  <div id="social-proof" class="fixed bottom-5 left-5 z-50 hidden max-w-xs md:max-w-sm bg-slate-900/95 border border-slate-700/90 text-white p-3 rounded-2xl shadow-2xl backdrop-blur-md flex items-center gap-3">
+    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-green-500 to-emerald-400 flex items-center justify-center text-white text-lg flex-shrink-0 shadow-md">
+      <i class="fa-solid fa-gift"></i>
+    </div>
+    <div class="flex-1 min-w-0">
+      <p id="sp-user" class="text-xs font-bold text-slate-200 truncate">Emily R. from Texas</p>
+      <p id="sp-action" class="text-[11px] text-green-400 font-semibold truncate">Claimed $750 PayPal Card</p>
+      <p id="sp-time" class="text-[10px] text-slate-400">42 seconds ago • Verified</p>
+    </div>
+  </div>
+
+  <!-- Footer Legal / Compliance -->
+  <footer class="w-full max-w-xl text-center text-slate-500 text-[11px] mt-8 z-10 space-y-2">
+    <p>This promotional website is not affiliated with, endorsed, or sponsored by any third-party brand or trademarks mentioned.</p>
+    <div class="flex items-center justify-center gap-4 text-slate-400">
+      <a href="#" class="hover:underline">Privacy Policy</a>
+      <span>|</span>
+      <a href="#" class="hover:underline">Terms of Service</a>
+      <span>|</span>
+      <a href="#" class="hover:underline">Contact</a>
+    </div>
+    <p class="text-slate-600 text-[10px]">© 2026 Promotional Rewards Hub. All rights reserved.</p>
+  </footer>
+
+  <!-- Core Script to load configuration & parameters -->
+  <script>
+    // Default Configuration
+    const defaultConfig = {
+      pageTitle: "Claim Your Exclusive Reward",
+      badgeText: "🔥 EXCLUSIVE LIMITED TIME OFFER",
+      headline: "Claim Your $750 PayPal Gift Card!",
+      subheadline: "Complete quick verified steps below to receive your direct reward instantly.",
+      imageUrl: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80",
+      buttonText: "CLAIM YOUR REWARD NOW",
+      buttonSubtext: "🔒 100% Free • Verified & Secure • Instant Access",
+      targetLink: "https://example.com/cpa-offer-link",
+      countdownMinutes: 5,
+      showCountdown: true,
+      showSocialProof: true,
+      showSteps: true,
+      remainingSpots: 3,
+      theme: "indigo"
+    };
+
+    // Load configuration: URL Parameters > LocalStorage > config.json > Default
+    async function loadConfig() {
+      let config = { ...defaultConfig };
+
+      // 1. Try fetching from config.json
+      try {
+        const res = await fetch('./config.json', { cache: 'no-cache' });
+        if (res.ok) {
+          const json = await res.json();
+          config = { ...config, ...json };
+        }
+      } catch (err) {
+        console.log("Using local config");
+      }
+
+      // 2. Check localStorage
+      try {
+        const local = localStorage.getItem('cpa_landing_config');
+        if (local) {
+          const parsed = JSON.parse(local);
+          config = { ...config, ...parsed };
+        }
+      } catch (e) {}
+
+      // 3. Check URL parameters (Highest priority for affiliate campaigns)
+      // e.g. ?link=https://...&title=iPhone+16&img=https://...
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('title')) config.headline = urlParams.get('title');
+      if (urlParams.get('sub')) config.subheadline = urlParams.get('sub');
+      if (urlParams.get('badge')) config.badgeText = urlParams.get('badge');
+      if (urlParams.get('img')) config.imageUrl = urlParams.get('img');
+      if (urlParams.get('btn')) config.buttonText = urlParams.get('btn');
+      if (urlParams.get('btnsub')) config.buttonSubtext = urlParams.get('btnsub');
+      if (urlParams.get('link')) config.targetLink = urlParams.get('link');
+      if (urlParams.get('spots')) config.remainingSpots = parseInt(urlParams.get('spots')) || 3;
+
+      renderPage(config);
+      initCountdown(config.countdownMinutes || 5);
+      if (config.showSocialProof !== false) initSocialProof();
+    }
+
+    function renderPage(cfg) {
+      document.title = cfg.pageTitle || cfg.headline;
+      document.getElementById('meta-title').innerText = cfg.pageTitle || cfg.headline;
+      document.getElementById('badge-text').innerText = cfg.badgeText || "🔥 EXCLUSIVE OFFER";
+      document.getElementById('main-headline').innerText = cfg.headline || "Claim Your Reward!";
+      document.getElementById('sub-headline').innerText = cfg.subheadline || "Follow the instructions to get your reward.";
+      
+      const imgEl = document.getElementById('offer-image');
+      if (cfg.imageUrl) {
+        imgEl.src = cfg.imageUrl;
+      }
+
+      document.getElementById('button-text').innerText = cfg.buttonText || "CLAIM NOW";
+      document.getElementById('button-subtext').innerText = cfg.buttonSubtext || "🔒 100% Free • Verified";
+      
+      const ctaBtn = document.getElementById('cta-button');
+      ctaBtn.href = cfg.targetLink || "#";
+
+      // Elements visibility
+      if (cfg.showCountdown === false) {
+        document.getElementById('countdown-wrapper').classList.add('hidden');
+      }
+      if (cfg.showSteps === false) {
+        document.getElementById('steps-container').classList.add('hidden');
+      }
+      if (cfg.remainingSpots) {
+        document.getElementById('spots-count').innerText = `${cfg.remainingSpots} spots`;
+      }
+    }
+
+    // Countdown Timer logic
+    function initCountdown(minutes) {
+      let duration = (minutes || 5) * 60;
+      const display = document.getElementById('countdown-display');
+
+      const timer = setInterval(() => {
+        const m = Math.floor(duration / 60);
+        const s = duration % 60;
+        display.textContent = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+
+        if (--duration < 0) {
+          duration = 300; // Reset gracefully so it never stays 00:00
+        }
+      }, 1000);
+    }
+
+    // Social Proof Notifications logic
+    const proofData = [
+      { name: "Michael B. from Ohio", action: "Claimed $750 PayPal Card", time: "32s ago" },
+      { name: "Sarah K. from California", action: "Claimed $1000 Amazon Voucher", time: "1m ago" },
+      { name: "David L. from Florida", action: "Claimed Cash App Reward", time: "45s ago" },
+      { name: "Emma W. from New York", action: "Claimed Free Fire 5000 Diamonds", time: "20s ago" },
+      { name: "James T. from London", action: "Claimed $500 Gift Card", time: "1m 15s ago" },
+      { name: "Jessica M. from Texas", action: "Completed verification", time: "15s ago" }
+    ];
+
+    function initSocialProof() {
+      const popup = document.getElementById('social-proof');
+      let index = 0;
+
+      function showNotification() {
+        const item = proofData[index % proofData.length];
+        index++;
+
+        document.getElementById('sp-user').innerText = item.name;
+        document.getElementById('sp-action').innerText = item.action;
+        document.getElementById('sp-time').innerText = `${item.time} • Verified`;
+
+        popup.classList.remove('hidden', 'animate-fade-out');
+        popup.classList.add('animate-slide-in');
+
+        setTimeout(() => {
+          popup.classList.remove('animate-slide-in');
+          popup.classList.add('animate-fade-out');
+          setTimeout(() => {
+            popup.classList.add('hidden');
+          }, 500);
+        }, 4000);
+      }
+
+      // Initial popup after 2.5 seconds
+      setTimeout(showNotification, 2500);
+      // Repeating every 9 seconds
+      setInterval(showNotification, 9000);
+    }
+
+    // Start everything
+    window.addEventListener('DOMContentLoaded', loadConfig);
+  </script>
+</body>
+</html>

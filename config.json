@@ -1,0 +1,17 @@
+{
+  "pageTitle": "Claim Your $750 PayPal Gift Card | Official Giveaway",
+  "badgeText": "🔥 EXCLUSIVE LIMITED TIME OFFER",
+  "headline": "Get a $750 PayPal Gift Card Today!",
+  "subheadline": "Follow the simple steps below. Complete 2 quick sponsor deals to claim your instant PayPal cash reward.",
+  "imageUrl": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80",
+  "buttonText": "CLAIM $750 PAYPAL NOW",
+  "buttonSubtext": "🔒 100% Free • Verified & Secure • Instant Access",
+  "targetLink": "https://example.com/cpa-offer-link",
+  "countdownMinutes": 5,
+  "showCountdown": true,
+  "showSocialProof": true,
+  "showSteps": true,
+  "remainingSpots": 4,
+  "theme": "indigo",
+  "adminPassword": "admin"
+}
